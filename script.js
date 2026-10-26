@@ -500,11 +500,9 @@ async function loadPhoto(file) {
   updatePadView();
   saveDraft();
 }
-["#photo-file", "#photo-camera"].forEach((sel) => {
-  $(sel).addEventListener("change", (e) => {
-    loadPhoto(e.target.files[0]);
-    e.target.value = "";
-  });
+$("#photo-file").addEventListener("change", (e) => {
+  loadPhoto(e.target.files[0]);
+  e.target.value = "";
 });
 $("#photo-remove").addEventListener("click", () => {
   clearPad();
