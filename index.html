@@ -1,0 +1,461 @@
+<!doctype html>
+<html lang="cs">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Dopis Ježíškovi</title>
+    <meta name="description" content="Napiš a nakresli dopis Ježíškovi." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;700&family=Fraunces:opsz,wght@9..144,500;9..144,700&family=Nunito:wght@400;700;800&display=swap"
+    />
+    <link rel="stylesheet" href="styles.css" />
+    <script src="script.js" defer></script>
+  </head>
+  <body>
+    <div class="snow" aria-hidden="true"></div>
+
+    <header class="site-header">
+      <p class="brand"><span aria-hidden="true">✨</span> Dopis Ježíškovi</p>
+      <button
+        type="button"
+        id="sound-toggle"
+        class="sound-toggle"
+        aria-pressed="true"
+      >
+        <span id="sound-icon" aria-hidden="true">🔔</span>
+        <span id="sound-label">Zvuk zapnutý</span>
+      </button>
+    </header>
+
+    <main id="main">
+      <!-- ===== Formulář ===== -->
+      <section id="form-view" aria-labelledby="form-title">
+        <div class="intro">
+          <h1 id="form-title">Napiš dopis Ježíškovi</h1>
+          <p class="lead">
+            Napiš svá přání, přidej k nim obrázky a&nbsp;klidně Ježíškovi
+            i&nbsp;něco nakresli. <span aria-hidden="true">🍪🔔</span>
+          </p>
+        </div>
+
+        <form id="letter-form" class="card" novalidate>
+          <!-- 1. Kdo píše -->
+          <div class="form-section">
+            <h2 class="section-title">
+              <span class="step" aria-hidden="true">1</span> Kdo píše?
+            </h2>
+            <div class="field-grid">
+              <div class="field">
+                <label for="name">Jak se jmenuješ?</label>
+                <div class="input-row">
+                  <input
+                    id="name"
+                    name="name"
+                    type="text"
+                    maxlength="40"
+                    autocomplete="given-name"
+                    required
+                    aria-describedby="name-error"
+                  />
+                </div>
+                <p id="name-error" class="error" hidden></p>
+              </div>
+              <div class="field field--age">
+                <label for="age"
+                  >Kolik ti je let?
+                  <span class="optional">(nepovinné)</span></label
+                >
+                <input
+                  id="age"
+                  name="age"
+                  type="number"
+                  min="1"
+                  max="99"
+                  step="1"
+                  inputmode="numeric"
+                  aria-describedby="age-error"
+                />
+                <p id="age-error" class="error" hidden></p>
+              </div>
+            </div>
+          </div>
+
+          <!-- 2. Přání -->
+          <div class="form-section">
+            <h2 class="section-title">
+              <span class="step" aria-hidden="true">2</span> Co by sis přál/a?
+            </h2>
+            <button
+              type="button"
+              id="open-wish"
+              class="plus-btn"
+              aria-expanded="false"
+              aria-controls="wish-panel"
+              aria-label="Přidat přání"
+            >
+              <span class="plus-icon" aria-hidden="true">+</span
+              ><span class="plus-label" aria-hidden="true">Přidat přání</span>
+            </button>
+
+            <div id="wish-panel" class="wish-panel" hidden>
+              <div class="field">
+                <label for="wish-text">Co si přeješ? Napiš to slovy.</label>
+                <div class="input-row">
+                  <input
+                    id="wish-text"
+                    type="text"
+                    maxlength="60"
+                    aria-describedby="wish-error"
+                  />
+                  <button
+                    type="button"
+                    class="mic"
+                    data-target="wish-text"
+                    aria-label="Nadiktovat přání"
+                    aria-pressed="false"
+                    hidden
+                  >
+                    <span aria-hidden="true">🎤</span>
+                  </button>
+                </div>
+              </div>
+              <div class="field">
+                <span class="label"
+                  >A vyber k tomu obrázek:
+                  <span
+                    id="emoji-chosen"
+                    class="emoji-chosen"
+                    aria-live="polite"
+                  ></span
+                ></span>
+                <p id="emoji-hint" class="hint" hidden></p>
+                <div
+                  id="emoji-picker"
+                  class="emoji-picker"
+                  role="group"
+                  aria-label="Emoji k přání"
+                ></div>
+              </div>
+              <div class="panel-buttons">
+                <button type="button" id="add-wish" class="btn btn-primary">
+                  Přidat přání
+                </button>
+                <button
+                  type="button"
+                  id="cancel-wish"
+                  class="btn btn-secondary"
+                >
+                  Zrušit
+                </button>
+              </div>
+            </div>
+            <p id="wish-error" class="error" hidden></p>
+
+            <h3 class="list-title">
+              Tvoje přání
+              <span class="count">(<span id="wish-count">0</span>/10)</span>
+            </h3>
+            <ul id="wish-list" class="wish-list" aria-live="polite"></ul>
+            <p id="wish-empty" class="empty">
+              Zatím tu nic není. Klikni na plus.
+              <span aria-hidden="true">🎁</span>
+            </p>
+          </div>
+
+          <!-- 3. Kresba -->
+          <div class="form-section">
+            <h2 class="section-title">
+              <span class="step" aria-hidden="true">3</span> Přidej Ježíškovi
+              obrázek <span class="optional">(nepovinné)</span>
+            </h2>
+            <div
+              class="mode-switch"
+              role="group"
+              aria-label="Jak přidat obrázek"
+            >
+              <button
+                type="button"
+                class="mode-btn"
+                id="mode-draw"
+                aria-pressed="true"
+              >
+                <span aria-hidden="true">✏️</span> Nakreslit obrázek
+              </button>
+              <button
+                type="button"
+                class="mode-btn"
+                id="mode-upload"
+                aria-pressed="false"
+              >
+                <span aria-hidden="true">📷</span> Nahrát obrázek
+              </button>
+            </div>
+
+            <div id="upload-panel" class="upload-panel" hidden>
+              <div class="upload-buttons">
+                <label class="btn btn-secondary">
+                  <span aria-hidden="true">🖼️</span> Vybrat obrázek
+                  <input
+                    id="photo-file"
+                    class="file-input"
+                    type="file"
+                    accept="image/*"
+                  />
+                </label>
+                <label class="btn btn-secondary">
+                  <span aria-hidden="true">📸</span> Vyfotit
+                  <input
+                    id="photo-camera"
+                    class="file-input"
+                    type="file"
+                    accept="image/*"
+                    capture="environment"
+                  />
+                </label>
+                <button
+                  type="button"
+                  id="photo-remove"
+                  class="btn btn-secondary"
+                  hidden
+                >
+                  <span aria-hidden="true">🗑️</span> Odstranit obrázek
+                </button>
+              </div>
+              <p id="photo-error" class="error" role="alert" hidden></p>
+              <p id="photo-empty" class="empty">
+                Vyber obrázek z telefonu nebo počítače, nebo ho rovnou vyfoť.
+              </p>
+            </div>
+
+            <div id="draw-toolbar" class="toolbar">
+              <div class="tool-group" role="group" aria-label="Barva">
+                <button
+                  type="button"
+                  class="swatch swatch--red"
+                  data-color="#c62828"
+                  aria-label="Červená"
+                  aria-pressed="true"
+                ></button>
+                <button
+                  type="button"
+                  class="swatch swatch--green"
+                  data-color="#2e7d32"
+                  aria-label="Zelená"
+                  aria-pressed="false"
+                ></button>
+                <button
+                  type="button"
+                  class="swatch swatch--blue"
+                  data-color="#1565c0"
+                  aria-label="Modrá"
+                  aria-pressed="false"
+                ></button>
+                <button
+                  type="button"
+                  class="swatch swatch--gold"
+                  data-color="#f2a900"
+                  aria-label="Zlatá"
+                  aria-pressed="false"
+                ></button>
+                <button
+                  type="button"
+                  class="swatch swatch--brown"
+                  data-color="#7b4a2a"
+                  aria-label="Perníčková hnědá"
+                  aria-pressed="false"
+                ></button>
+                <button
+                  type="button"
+                  class="swatch swatch--black"
+                  data-color="#222222"
+                  aria-label="Černá"
+                  aria-pressed="false"
+                ></button>
+              </div>
+              <div class="tool-group" role="group" aria-label="Štětec">
+                <button
+                  type="button"
+                  class="tool size-btn"
+                  data-size="6"
+                  aria-label="Tenký štětec"
+                  aria-pressed="true"
+                >
+                  <span class="dot dot--thin" aria-hidden="true"></span>
+                </button>
+                <button
+                  type="button"
+                  class="tool size-btn"
+                  data-size="18"
+                  aria-label="Tlustý štětec"
+                  aria-pressed="false"
+                >
+                  <span class="dot dot--thick" aria-hidden="true"></span>
+                </button>
+                <button
+                  type="button"
+                  class="tool"
+                  id="eraser"
+                  aria-pressed="false"
+                >
+                  <span aria-hidden="true">🧽</span> Guma
+                </button>
+                <button type="button" class="tool" id="clear-pad">
+                  <span aria-hidden="true">🗑️</span> Smazat vše
+                </button>
+              </div>
+            </div>
+            <canvas
+              id="pad"
+              class="pad"
+              width="900"
+              height="560"
+              role="img"
+              aria-label="Kreslicí plátno pro obrázek Ježíškovi"
+            ></canvas>
+          </div>
+
+          <!-- 4. Ozdoba -->
+          <div class="form-section">
+            <fieldset class="deco-fieldset">
+              <legend class="section-title">
+                <span class="step" aria-hidden="true">4</span> Jakou ozdobu dáme
+                na dopis?
+              </legend>
+              <div class="deco-options">
+                <label class="deco-option"
+                  ><input
+                    type="radio"
+                    name="deco"
+                    value="hvezda"
+                    checked
+                  /><span class="deco-card"
+                    ><span class="deco-icon" aria-hidden="true">⭐</span
+                    >Hvězda</span
+                  ></label
+                >
+                <label class="deco-option"
+                  ><input type="radio" name="deco" value="stromecek" /><span
+                    class="deco-card"
+                    ><span class="deco-icon" aria-hidden="true">🎄</span
+                    >Stromeček</span
+                  ></label
+                >
+                <label class="deco-option"
+                  ><input type="radio" name="deco" value="snehulak" /><span
+                    class="deco-card"
+                    ><span class="deco-icon" aria-hidden="true">⛄</span
+                    >Sněhulák</span
+                  ></label
+                >
+                <label class="deco-option"
+                  ><input type="radio" name="deco" value="zvonecek" /><span
+                    class="deco-card"
+                    ><span class="deco-icon" aria-hidden="true">🔔</span
+                    >Zvoneček</span
+                  ></label
+                >
+              </div>
+            </fieldset>
+          </div>
+
+          <button type="submit" class="btn btn-primary btn-send">
+            Odeslat Ježíškovi <span aria-hidden="true">✉️</span>
+          </button>
+        </form>
+      </section>
+
+      <!-- ===== Dopis ===== -->
+      <section id="letter-view" aria-label="Tvůj dopis" hidden>
+        <p id="countdown" class="countdown"></p>
+
+        <article id="letter" class="paper" aria-labelledby="letter-title">
+          <span id="letter-deco" class="letter-deco" aria-hidden="true"
+            >⭐</span
+          >
+          <h2 id="letter-title" class="letter-title" tabindex="-1">
+            Dopis Ježíškovi
+          </h2>
+          <p class="greeting">Milý Ježíšku,</p>
+          <p>moc by mě potěšilo:</p>
+          <ul id="letter-wishes" class="letter-wishes"></ul>
+          <figure id="letter-drawing-wrap" class="letter-drawing" hidden>
+            <img
+              id="letter-drawing"
+              alt="Obrázek, který jsem nakreslil/a pro Ježíška"
+            />
+          </figure>
+          <div class="signature">
+            <p>S láskou</p>
+            <p id="letter-name" class="sig-name"></p>
+            <p id="letter-date" class="letter-date"></p>
+          </div>
+        </article>
+
+        <div class="actions">
+          <button type="button" id="print-btn" class="btn btn-gold">
+            <span aria-hidden="true">🖨️</span> Vytisknout
+          </button>
+          <button type="button" id="png-btn" class="btn btn-gold">
+            <span aria-hidden="true">🖼️</span> Stáhnout jako obrázek
+          </button>
+          <button type="button" id="share-btn" class="btn btn-gold" hidden>
+            <span aria-hidden="true">📤</span> Sdílet
+          </button>
+          <button type="button" id="link-btn" class="btn btn-ghost">
+            <span aria-hidden="true">🔗</span> Zkopírovat odkaz
+          </button>
+        </div>
+        <p id="action-status" class="status" role="status"></p>
+        <div class="new-letter">
+          <button type="button" id="new-btn" class="btn btn-primary">
+            <span aria-hidden="true">✏️</span> Napsat nový dopis
+          </button>
+        </div>
+      </section>
+    </main>
+
+    <!-- ===== Kouzelný přechod ===== -->
+    <div id="transition" class="transition" hidden>
+      <div class="anim-stage" aria-hidden="true">
+        <div class="anim-window"><span class="anim-moon"></span></div>
+        <div class="anim-paper"></div>
+        <div class="anim-fly">
+          <div class="anim-envelope">
+            <div class="anim-flap"></div>
+            <span class="anim-seal"></span>
+          </div>
+        </div>
+      </div>
+      <p class="anim-caption" role="status">Dopis letí k Ježíškovi…</p>
+      <button type="button" id="skip-anim" class="btn btn-ghost skip">
+        Přeskočit <span aria-hidden="true">▸</span>
+      </button>
+    </div>
+
+    <dialog id="confirm-dialog" aria-labelledby="confirm-title">
+      <form method="dialog">
+        <h2 id="confirm-title">Napsat nový dopis?</h2>
+        <p>
+          Tenhle dopis i&nbsp;obrázek se smažou. Jestli ho chceš schovat,
+          nejdřív ho vytiskni nebo stáhni.
+        </p>
+        <div class="dialog-buttons">
+          <button value="cancel" class="btn btn-secondary" autofocus>
+            Ne, nechat
+          </button>
+          <button value="ok" class="btn btn-primary">Ano, nový dopis</button>
+        </div>
+      </form>
+    </dialog>
+
+    <footer class="site-footer">
+      <p>
+        Dopis pošli Ježíškovi! Doufám, že dostaneš, co si přeješ. EKI
+        <span aria-hidden="true">🍪 ✨</span>
+      </p>
+    </footer>
+  </body>
+</html>

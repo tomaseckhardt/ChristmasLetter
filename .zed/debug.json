@@ -1,0 +1,47 @@
+// Project-local debug tasks
+//
+// For more documentation on how to configure debug tasks,
+// see: https://zed.dev/docs/debugger
+[
+  {
+    "adapter": "JavaScript",
+    "label": "Chrome: Debug webové aplikace (Dev Server)",
+    "type": "chrome",
+    "request": "launch",
+    "url": "http://localhost:3000",
+    "webRoot": "$ZED_WORKTREE_ROOT",
+    "sourceMaps": true,
+    "skipFiles": ["<node_internals>/**"],
+  },
+  {
+    "adapter": "JavaScript",
+    "label": "Chrome: Debug statické HTML stránky",
+    "type": "chrome",
+    "request": "launch",
+    "url": "http://localhost:8080/index.html",
+    "webRoot": "$ZED_WORKTREE_ROOT",
+    "sourceMaps": true,
+    "skipFiles": ["<node_internals>/**"],
+  },
+  {
+    "adapter": "JavaScript",
+    "label": "Playwright: Debug aktuální test",
+    "type": "node",
+    "request": "launch",
+    "program": "$ZED_WORKTREE_ROOT/node_modules/playwright/cli.js",
+    "args": ["test", "$ZED_FILE", "--debug"],
+    "cwd": "$ZED_WORKTREE_ROOT",
+    "console": "integratedTerminal",
+    "skipFiles": ["<node_internals>/**"],
+  },
+  {
+    "adapter": "JavaScript",
+    "label": "Chrome: Attach k běžícímu Chrome",
+    "type": "chrome",
+    "request": "attach",
+    "port": 9222,
+    "webRoot": "$ZED_WORKTREE_ROOT",
+    "sourceMaps": true,
+    "skipFiles": ["<node_internals>/**"],
+  },
+]
